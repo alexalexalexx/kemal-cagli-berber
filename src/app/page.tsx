@@ -60,10 +60,6 @@ export default function Home() {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [customerName, setCustomerName] = useState("");
   const [customerSurname, setCustomerSurname] = useState("");
-  const [customerPhone, setCustomerPhone] = useState("");
-  const [showBookingForm, setShowBookingForm] = useState(false);
-  const [bookingComplete, setBookingComplete] = useState(false);
-  const [bookedSlots] = useState<string[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const bookingRef = useRef<HTMLDivElement>(null);
@@ -92,26 +88,15 @@ export default function Home() {
   };
 
 
-  const handleBooking = () => {
-    console.log({ services: selectedServices, date: selectedDate, time: selectedTime, customer: { name: customerName, surname: customerSurname, phone: customerPhone } });
-    setBookingComplete(true);
-  };
-
-  const resetBooking = () => {
-    setBookingComplete(false);
-    setShowBookingForm(false);
-    setSelectedServices([]);
-    setSelectedDate(null);
-    setSelectedTime(null);
-    setCustomerName("");
-    setCustomerSurname("");
-    setCustomerPhone("");
-  };
-
   const formatDate = (date: Date) => `${date.getDate()} ${monthNames[date.getMonth()]} ${dayNames[date.getDay()]}`;
 
-  const canProceedToForm = selectedServices.length > 0 && selectedDate && selectedTime;
-  const canSubmit = customerName && customerSurname && customerPhone;
+  const canSubmit = selectedServices.length > 0 && selectedDate && selectedTime && customerName.trim() && customerSurname.trim();
+
+  const getWhatsAppUrl = () => {
+    const serviceNames = services.filter(s => selectedServices.includes(s.id)).map(s => s.name).join(", ");
+    const message = `Merhaba, randevu almak istiyorum.\n\nHizmet: ${serviceNames}\nTarih: ${selectedDate ? formatDate(selectedDate) : ""}\nSaat: ${selectedTime}\n\nAd Soyad: ${customerName} ${customerSurname}`;
+    return `https://wa.me/905305590682?text=${encodeURIComponent(message)}`;
+  };
 
   return (
     <div style={{ background: "#1a1a1a", minHeight: "100vh" }}>
@@ -356,135 +341,113 @@ export default function Home() {
             Randevu Alın
           </h3>
 
-          {bookingComplete ? (
-            <div style={{ background: "#242424", border: "1px solid #d4af37", padding: "60px 40px", textAlign: "center" }}>
-              <div style={{ fontSize: "60px", marginBottom: "20px", color: "#d4af37" }}>✓</div>
-              <h4 style={{ color: "#d4af37", fontSize: "24px", marginBottom: "20px", fontWeight: "500" }}>Randevunuz Alındı</h4>
-              <p style={{ color: "#fff", marginBottom: "10px" }}>{selectedDate && formatDate(selectedDate)} - {selectedTime}</p>
-              <p style={{ color: "#888", marginBottom: "30px" }}>{services.filter(s => selectedServices.includes(s.id)).map(s => s.name).join(", ")}</p>
-              <button onClick={resetBooking} style={{ background: "transparent", border: "1px solid #555", color: "#888", padding: "12px 30px", fontSize: "13px", cursor: "pointer" }}>
-                YENİ RANDEVU
-              </button>
+          <div style={{ background: "#242424", padding: "clamp(30px, 6vw, 50px) clamp(15px, 4vw, 40px)" }}>
+
+            {/* 1. HİZMET */}
+            <div style={{ marginBottom: "40px" }}>
+              <p style={{ color: "#888", fontSize: "13px", letterSpacing: "2px", marginBottom: "20px" }}>1. HİZMET SEÇİN</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "center" }}>
+                {services.map((service) => (
+                  <button key={service.id} onClick={() => toggleService(service.id)} style={{
+                    background: selectedServices.includes(service.id) ? "#d4af37" : "transparent",
+                    border: `1px solid ${selectedServices.includes(service.id) ? "#d4af37" : "#555"}`,
+                    color: selectedServices.includes(service.id) ? "#1a1a1a" : "#fff",
+                    padding: "12px 24px", fontSize: "14px", cursor: "pointer"
+                  }}>
+                    {service.name}
+                  </button>
+                ))}
+              </div>
             </div>
-          ) : !showBookingForm ? (
-            <div style={{ background: "#242424", padding: "clamp(30px, 6vw, 50px) clamp(15px, 4vw, 40px)" }}>
+
+            {/* 2. TARİH */}
+            <div style={{ marginBottom: "40px" }}>
+              <p style={{ color: "#888", fontSize: "13px", letterSpacing: "2px", marginBottom: "20px" }}>2. TARİH SEÇİN</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "center" }}>
+                {availableDates.map((date, index) => (
+                  <button key={index} onClick={() => { setSelectedDate(date); setSelectedTime(null); }} style={{
+                    background: selectedDate?.toDateString() === date.toDateString() ? "#d4af37" : "transparent",
+                    border: `1px solid ${selectedDate?.toDateString() === date.toDateString() ? "#d4af37" : "#555"}`,
+                    color: selectedDate?.toDateString() === date.toDateString() ? "#1a1a1a" : "#fff",
+                    padding: "15px 20px", fontSize: "14px", cursor: "pointer", minWidth: "80px"
+                  }}>
+                    <div style={{ fontSize: "11px", opacity: 0.7 }}>{dayNames[date.getDay()]}</div>
+                    <div style={{ fontWeight: "600" }}>{date.getDate()}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 3. SAAT */}
+            {selectedDate && (
               <div style={{ marginBottom: "40px" }}>
-                <p style={{ color: "#888", fontSize: "13px", letterSpacing: "2px", marginBottom: "20px" }}>1. HİZMET SEÇİN</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "center" }}>
-                  {services.map((service) => (
-                    <button key={service.id} onClick={() => toggleService(service.id)} style={{
-                      background: selectedServices.includes(service.id) ? "#d4af37" : "transparent",
-                      border: `1px solid ${selectedServices.includes(service.id) ? "#d4af37" : "#555"}`,
-                      color: selectedServices.includes(service.id) ? "#1a1a1a" : "#fff",
-                      padding: "12px 24px", fontSize: "14px", cursor: "pointer"
-                    }}>
-                      {service.name}
-                    </button>
-                  ))}
+                <p style={{ color: "#888", fontSize: "13px", letterSpacing: "2px", marginBottom: "20px" }}>3. SAAT SEÇİN</p>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(70px, 1fr))", gap: "8px", maxWidth: "500px", margin: "0 auto" }}>
+                  {timeSlots.map((time) => {
+                    const isSelected = selectedTime === time;
+                    const now = new Date();
+                    const isToday = selectedDate?.toDateString() === now.toDateString();
+                    const [hours, minutes] = time.split(":").map(Number);
+                    const isPastTime = isToday && (hours < now.getHours() || (hours === now.getHours() && minutes <= now.getMinutes()));
+                    return (
+                      <button key={time} onClick={() => !isPastTime && setSelectedTime(time)} disabled={isPastTime} style={{
+                        background: isSelected ? "#d4af37" : "transparent",
+                        border: `1px solid ${isPastTime ? "#333" : isSelected ? "#d4af37" : "#555"}`,
+                        color: isPastTime ? "#555" : isSelected ? "#1a1a1a" : "#fff",
+                        padding: "10px", fontSize: "13px", cursor: isPastTime ? "not-allowed" : "pointer",
+                        textDecoration: isPastTime ? "line-through" : "none", opacity: isPastTime ? 0.5 : 1
+                      }}>
+                        {time}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
+            )}
 
+            {/* 4. AD SOYAD */}
+            {selectedDate && selectedTime && (
               <div style={{ marginBottom: "40px" }}>
-                <p style={{ color: "#888", fontSize: "13px", letterSpacing: "2px", marginBottom: "20px" }}>2. TARİH SEÇİN</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "center" }}>
-                  {availableDates.map((date, index) => (
-                    <button key={index} onClick={() => setSelectedDate(date)} style={{
-                      background: selectedDate?.toDateString() === date.toDateString() ? "#d4af37" : "transparent",
-                      border: `1px solid ${selectedDate?.toDateString() === date.toDateString() ? "#d4af37" : "#555"}`,
-                      color: selectedDate?.toDateString() === date.toDateString() ? "#1a1a1a" : "#fff",
-                      padding: "15px 20px", fontSize: "14px", cursor: "pointer", minWidth: "80px"
-                    }}>
-                      <div style={{ fontSize: "11px", opacity: 0.7 }}>{dayNames[date.getDay()]}</div>
-                      <div style={{ fontWeight: "600" }}>{date.getDate()}</div>
-                    </button>
-                  ))}
+                <p style={{ color: "#888", fontSize: "13px", letterSpacing: "2px", marginBottom: "20px" }}>4. BİLGİLERİNİZ</p>
+                <div style={{ maxWidth: "400px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <input
+                    type="text" placeholder="Adınız" value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value.replace(/[0-9]/g, ""))}
+                    style={{ width: "100%", padding: "16px 20px", background: "#333", border: "1px solid #444", color: "#fff", fontSize: "15px", outline: "none", boxSizing: "border-box" }}
+                  />
+                  <input
+                    type="text" placeholder="Soyadınız" value={customerSurname}
+                    onChange={(e) => setCustomerSurname(e.target.value.replace(/[0-9]/g, ""))}
+                    style={{ width: "100%", padding: "16px 20px", background: "#333", border: "1px solid #444", color: "#fff", fontSize: "15px", outline: "none", boxSizing: "border-box" }}
+                  />
                 </div>
               </div>
+            )}
 
-              {selectedDate && (
-                <div style={{ marginBottom: "40px" }}>
-                  <p style={{ color: "#888", fontSize: "13px", letterSpacing: "2px", marginBottom: "20px" }}>3. SAAT SEÇİN</p>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(70px, 1fr))", gap: "8px", maxWidth: "500px", margin: "0 auto" }}>
-                    {timeSlots.map((time) => {
-                      const isBooked = bookedSlots.includes(time);
-                      const isSelected = selectedTime === time;
-
-                      // Bugün için geçmiş saatleri kontrol et
-                      const now = new Date();
-                      const isToday = selectedDate?.toDateString() === now.toDateString();
-                      const [hours, minutes] = time.split(":").map(Number);
-                      const isPastTime = isToday && (hours < now.getHours() || (hours === now.getHours() && minutes <= now.getMinutes()));
-
-                      const isDisabled = isBooked || isPastTime;
-
-                      return (
-                        <button key={time} onClick={() => !isDisabled && setSelectedTime(time)} disabled={isDisabled} style={{
-                          background: isSelected ? "#d4af37" : "transparent",
-                          border: `1px solid ${isDisabled ? "#333" : isSelected ? "#d4af37" : "#555"}`,
-                          color: isDisabled ? "#555" : isSelected ? "#1a1a1a" : "#fff",
-                          padding: "10px", fontSize: "13px", cursor: isDisabled ? "not-allowed" : "pointer",
-                          textDecoration: isDisabled ? "line-through" : "none", opacity: isDisabled ? 0.5 : 1
-                        }}>
-                          {time}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {selectedServices.length > 0 && (
-                <div style={{ borderTop: "1px solid #444", paddingTop: "30px", marginTop: "30px" }}>
-                  <a
-                    href={canProceedToForm ? `https://wa.me/905305590682?text=${encodeURIComponent(
-                      `Merhaba, randevu almak istiyorum.\n\nHizmet: ${services.filter(s => selectedServices.includes(s.id)).map(s => s.name).join(", ")}\nTarih: ${selectedDate ? formatDate(selectedDate) : ""}\nSaat: ${selectedTime || ""}`
-                    )}` : "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      display: "inline-block",
-                      background: canProceedToForm ? "#25D366" : "#444",
-                      border: "none",
-                      color: canProceedToForm ? "#fff" : "#888",
-                      padding: "16px 50px",
-                      fontSize: "13px",
-                      letterSpacing: "2px",
-                      cursor: canProceedToForm ? "pointer" : "not-allowed",
-                      fontWeight: "600",
-                      textDecoration: "none",
-                      pointerEvents: canProceedToForm ? "auto" : "none"
-                    }}
-                  >
-                    RANDEVU AL
-                  </a>
-                </div>
-              )}
+            {/* RANDEVU AL */}
+            <div style={{ borderTop: "1px solid #444", paddingTop: "30px", marginTop: "10px" }}>
+              <a
+                href={canSubmit ? getWhatsAppUrl() : undefined}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "inline-block",
+                  background: canSubmit ? "#25D366" : "#444",
+                  color: canSubmit ? "#fff" : "#888",
+                  padding: "16px 50px",
+                  fontSize: "13px",
+                  letterSpacing: "2px",
+                  fontWeight: "600",
+                  textDecoration: "none",
+                  cursor: canSubmit ? "pointer" : "not-allowed",
+                  pointerEvents: canSubmit ? "auto" : "none"
+                }}
+              >
+                RANDEVU AL
+              </a>
             </div>
-          ) : (
-            <div style={{ background: "#242424", padding: "50px 40px" }}>
-              <p style={{ color: "#888", fontSize: "13px", letterSpacing: "2px", marginBottom: "30px" }}>BİLGİLERİNİZ</p>
-              <div style={{ maxWidth: "400px", margin: "0 auto" }}>
-                <input type="text" placeholder="Adınız" value={customerName} onChange={(e) => setCustomerName(e.target.value)}
-                  style={{ width: "100%", padding: "16px 20px", background: "#333", border: "1px solid #444", color: "#fff", fontSize: "15px", marginBottom: "15px", outline: "none" }} />
-                <input type="text" placeholder="Soyadınız" value={customerSurname} onChange={(e) => setCustomerSurname(e.target.value)}
-                  style={{ width: "100%", padding: "16px 20px", background: "#333", border: "1px solid #444", color: "#fff", fontSize: "15px", marginBottom: "15px", outline: "none" }} />
-                <input type="tel" placeholder="Telefon Numaranız" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)}
-                  style={{ width: "100%", padding: "16px 20px", background: "#333", border: "1px solid #444", color: "#fff", fontSize: "15px", marginBottom: "30px", outline: "none" }} />
-              </div>
-              <div style={{ background: "#333", padding: "25px", marginBottom: "30px", textAlign: "left", maxWidth: "400px", margin: "0 auto 30px" }}>
-                <p style={{ color: "#888", fontSize: "13px", marginBottom: "10px" }}>Hizmet: <span style={{ color: "#fff" }}>{services.filter(s => selectedServices.includes(s.id)).map(s => s.name).join(", ")}</span></p>
-                <p style={{ color: "#888", fontSize: "13px", marginBottom: "10px" }}>Tarih: <span style={{ color: "#fff" }}>{selectedDate && formatDate(selectedDate)}</span></p>
-                <p style={{ color: "#888", fontSize: "13px" }}>Saat: <span style={{ color: "#fff" }}>{selectedTime}</span></p>
-              </div>
-              <div style={{ display: "flex", gap: "15px", justifyContent: "center" }}>
-                <button onClick={() => setShowBookingForm(false)} style={{ background: "transparent", border: "1px solid #555", color: "#888", padding: "16px 40px", fontSize: "13px", cursor: "pointer" }}>GERİ</button>
-                <button onClick={handleBooking} disabled={!canSubmit} style={{
-                  background: canSubmit ? "#d4af37" : "#444", border: "none", color: canSubmit ? "#1a1a1a" : "#888",
-                  padding: "16px 40px", fontSize: "13px", letterSpacing: "2px", cursor: canSubmit ? "pointer" : "not-allowed", fontWeight: "600"
-                }}>ONAYLA</button>
-              </div>
-            </div>
-          )}
+
+          </div>
         </div>
       </section>
 
