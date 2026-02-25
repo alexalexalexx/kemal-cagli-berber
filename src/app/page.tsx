@@ -85,7 +85,7 @@ export default function Home() {
   const getWhatsAppUrl = () => {
     const serviceNames = services.filter(s => selectedServices.includes(s.id)).map(s => s.name).join(", ");
     const message = `Merhaba, randevu almak istiyorum.\n\nHizmet: ${serviceNames}\nTarih: ${selectedDate ? formatDate(selectedDate) : ""}\nSaat: ${selectedTime}\n\nAd Soyad: ${customerName} ${customerSurname}`;
-    return `https://wa.me/905305590682?text=${encodeURIComponent(message)}`;
+    return `https://wa.me/905316729454?text=${encodeURIComponent(message)}`;
   };
 
   return (
@@ -98,7 +98,7 @@ export default function Home() {
       }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "15px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h1 style={{ fontFamily: "'Shimes Two', cursive", fontSize: "clamp(24px, 5vw, 32px)", color: "#d4af37", fontWeight: "normal" }}>
-            Kemal Çağlı
+            Kemal çağlı
           </h1>
 
           {/* Desktop Nav */}
@@ -157,7 +157,7 @@ export default function Home() {
             fontFamily: "'Shimes Two', cursive", fontSize: "clamp(45px, 12vw, 140px)",
             color: "#ffffff", fontWeight: "normal", marginBottom: "20px", lineHeight: "1"
           }}>
-            Kemal Çağlı
+            Kemal çağlı
           </h2>
           <p style={{ color: "#999", fontSize: "clamp(14px, 4vw, 18px)", maxWidth: "500px", margin: "0 auto 40px", lineHeight: "1.8", padding: "0 10px" }}>
             Tarzınızı yansıtan kesimler için doğru adres. 37 yılı aşkın tecrübe ile hizmetinizdeyiz.
@@ -453,7 +453,7 @@ export default function Home() {
             </div>
             <div>
               <p style={{ color: "#d4af37", fontSize: "13px", letterSpacing: "2px", marginBottom: "15px" }}>TELEFON</p>
-              <a href="tel:+905305590682" style={{ color: "#fff", textDecoration: "none", fontSize: "clamp(16px, 4vw, 18px)" }}>0530 559 06 82</a>
+              <a href="tel:+905316729454" style={{ color: "#fff", textDecoration: "none", fontSize: "clamp(16px, 4vw, 18px)" }}>0531 672 94 54</a>
             </div>
             <div>
               <p style={{ color: "#d4af37", fontSize: "13px", letterSpacing: "2px", marginBottom: "15px" }}>ÇALIŞMA SAATLERİ</p>
@@ -468,11 +468,11 @@ export default function Home() {
       {/* FOOTER */}
       <footer style={{ padding: "clamp(30px, 6vw, 50px) clamp(15px, 4vw, 40px)", background: "#1a1a1a", borderTop: "1px solid #333", textAlign: "center" }}>
         <h2 style={{ fontFamily: "'Shimes Two', cursive", fontSize: "clamp(24px, 6vw, 32px)", color: "#d4af37", fontWeight: "normal", marginBottom: "20px" }}>
-          Kemal Çağlı
+          Kemal çağlı
         </h2>
         <div style={{ display: "flex", gap: "20px", justifyContent: "center", marginBottom: "25px", flexWrap: "wrap" }}>
           <a href="https://www.instagram.com/kemal_cagli/" target="_blank" rel="noopener noreferrer" style={{ color: "#888", textDecoration: "none", fontSize: "14px" }}>Instagram</a>
-          <a href="tel:+905305590682" style={{ color: "#888", textDecoration: "none", fontSize: "14px" }}>Telefon</a>
+          <a href="tel:+905316729454" style={{ color: "#888", textDecoration: "none", fontSize: "14px" }}>Telefon</a>
           <a href="#iletisim" style={{ color: "#888", textDecoration: "none", fontSize: "14px" }}>İletişim</a>
         </div>
         <p style={{ color: "#555", fontSize: "12px" }}>© 2024 Kemal Çağlı Berber. Tüm hakları saklıdır.</p>
