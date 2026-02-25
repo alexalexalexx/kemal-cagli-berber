@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 
 const services = [
   { id: 1, name: "Saç" },
-  { id: 2, name: "Saç + Sakal" },
+  { id: 2, name: "Sakal" },
   { id: 3, name: "Saç Bakım" },
   { id: 4, name: "Cilt Bakım" },
   { id: 5, name: "Keratin Düzleştirme" },
@@ -72,19 +72,9 @@ export default function Home() {
   };
 
   const toggleService = (serviceId: number) => {
-    setSelectedServices((prev) => {
-      if (prev.includes(serviceId)) {
-        return prev.filter((id) => id !== serviceId);
-      }
-      // Saç (id:1) ve Saç + Sakal (id:2) birlikte seçilemez
-      if (serviceId === 1) {
-        return [...prev.filter((id) => id !== 2), serviceId];
-      }
-      if (serviceId === 2) {
-        return [...prev.filter((id) => id !== 1), serviceId];
-      }
-      return [...prev, serviceId];
-    });
+    setSelectedServices((prev) =>
+      prev.includes(serviceId) ? prev.filter((id) => id !== serviceId) : [...prev, serviceId]
+    );
   };
 
 
@@ -170,7 +160,7 @@ export default function Home() {
             Kemal Çağlı
           </h2>
           <p style={{ color: "#999", fontSize: "clamp(14px, 4vw, 18px)", maxWidth: "500px", margin: "0 auto 40px", lineHeight: "1.8", padding: "0 10px" }}>
-            Tarzınızı yansıtan kesimler için doğru adres. 15 yılı aşkın tecrübe ile hizmetinizdeyiz.
+            Tarzınızı yansıtan kesimler için doğru adres. 37 yılı aşkın tecrübe ile hizmetinizdeyiz.
           </p>
           <div style={{ display: "flex", gap: "15px", justifyContent: "center", flexWrap: "wrap" }}>
             <button onClick={scrollToBooking} style={{
@@ -198,7 +188,7 @@ export default function Home() {
               Mükemmellik Geleneği
             </h3>
             <p style={{ color: "#999", fontSize: "clamp(14px, 4vw, 16px)", lineHeight: "2", marginBottom: "25px", maxWidth: "600px", margin: "0 auto 25px" }}>
-              2009 yılından bu yana İstanbul&apos;un kalbinde, Şişli Feriköy&apos;de hizmet veriyoruz. Kemal Çağlı olarak,
+              2000 yılından bu yana İstanbul&apos;un kalbinde, Şişli Feriköy&apos;de hizmet veriyoruz. Kemal Çağlı olarak,
               geleneksel berberlik sanatını modern tekniklerle birleştirerek her müşterimize özel bir deneyim sunuyoruz.
             </p>
             <p style={{ color: "#999", fontSize: "clamp(14px, 4vw, 16px)", lineHeight: "2", marginBottom: "40px", maxWidth: "600px", margin: "0 auto 40px" }}>
@@ -207,12 +197,8 @@ export default function Home() {
             </p>
             <div style={{ display: "flex", gap: "clamp(20px, 5vw, 50px)", justifyContent: "center", flexWrap: "wrap" }}>
               <div>
-                <p style={{ color: "#d4af37", fontSize: "clamp(32px, 8vw, 42px)", fontWeight: "600" }}>15+</p>
+                <p style={{ color: "#d4af37", fontSize: "clamp(32px, 8vw, 42px)", fontWeight: "600" }}>37+</p>
                 <p style={{ color: "#888", fontSize: "clamp(11px, 3vw, 13px)", letterSpacing: "2px" }}>YIL DENEYİM</p>
-              </div>
-              <div>
-                <p style={{ color: "#d4af37", fontSize: "clamp(32px, 8vw, 42px)", fontWeight: "600" }}>10K+</p>
-                <p style={{ color: "#888", fontSize: "clamp(11px, 3vw, 13px)", letterSpacing: "2px" }}>MUTLU MÜŞTERİ</p>
               </div>
               <div>
                 <p style={{ color: "#d4af37", fontSize: "clamp(32px, 8vw, 42px)", fontWeight: "600" }}>3</p>
