@@ -475,7 +475,7 @@ export default function Home() {
           <a href="tel:+905316729454" style={{ color: "#888", textDecoration: "none", fontSize: "14px" }}>Telefon</a>
           <a href="#iletisim" style={{ color: "#888", textDecoration: "none", fontSize: "14px" }}>İletişim</a>
         </div>
-        <p style={{ color: "#555", fontSize: "12px" }}>© 2024 Kemal Çağlı Berber. Tüm hakları saklıdır.</p>
+        <p style={{ color: "#555", fontSize: "12px" }}>© 2026 Kemal çağlı Berber. Tüm hakları saklıdır.</p>
       </footer>
     </div>
   );
